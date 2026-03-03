@@ -12,7 +12,6 @@ import { LoginDto } from './dto/login.dto';
 import { JwtPayload, JwtServiceCustom } from './jwt.service';
 import { ConfigService } from '@nestjs/config';
 import { RegisterDto } from './dto/register.dto';
-import { EmailService } from '../email/email.service';
 import { emailQueue } from 'src/app/modules/email/email.queue';
 import { jobs } from 'src/app/common/rules/jobs';
 
@@ -45,15 +44,13 @@ export class AuthService {
     const user = await this.userRepo.findOneBy({ email: data.email });
     if (!user) {
       throw new UnauthorizedException({
-        field: 'email',
-        message: 'Email inválido',
+        message: 'Credenciais inválidas',
       });
     }
     const isPasswordValid = await bcrypt.compare(data.password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException({
-        field: 'password',
-        message: 'Senha inválida',
+        message: 'Credenciais inválidas',
       });
     }
 
